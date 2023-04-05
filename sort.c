@@ -1,20 +1,102 @@
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 int extraMemoryAllocated;
+
+void heapify(int arr[], int n, int i)
+{
+	//left and right children
+	int left = 2 * i + 1;
+	int right = 2 * i + 2;
+	int max = i;
+
+	//if left child is larger than the root 
+	if(left < n && arr[left] > arr[max]){
+		max = left;
+	}
+	
+	//if right child is larger than the root
+	if(right < n && arr[right] > arr[max]){
+		max = right;
+	}
+
+	//if largest != root
+	if(max != i){
+		//create temp variable for swap
+		int temp = arr[i];
+		arr[i] = arr[max];
+		arr[max] = temp;
+
+		//recursive call after base cases
+		heapify(arr, n, max);
+	}
+
+}
+
+void build_max_heap(int arr[], int n)
+{
+	//floor - 1
+	int a = (n/2) -1;
+
+	//heapify heap
+	for(a; a>=0; a--){
+		heapify(arr, n, a);
+	}
+}
 
 // implements heap sort
 // extraMemoryAllocated counts bytes of memory allocated
 void heapSort(int arr[], int n)
 {
-}
+	build_max_heap(arr, n);
 
+	//n (elements in array) - 1
+	int b = n-1;
+	for(b; b>=0; b--){
+		int temp = arr[0];
+		arr[0] = arr[b];
+		arr[b] = temp;
+
+		//heapify once again but i=0
+		heapify(arr, b, 0);
+	}
+}
 
 // implement merge sort
 // extraMemoryAllocated counts bytes of extra memory allocated
 void mergeSort(int pData[], int l, int r)
 {
+	//used from previous submitted assignment
+	if (l >= r) return;
+
+    int mid = l + (r - l) / 2;
+    mergeSort(pData, l, mid);
+    mergeSort(pData, mid + 1, r);
+
+    int n1 = mid - l + 1;
+    int n2 = r - mid;
+
+    int L[n1], R[n2];
+
+    for (int i = 0; i < n1; i++)
+        L[i] = pData[l + i];
+    for (int j = 0; j < n2; j++)
+        R[j] = pData[mid + 1 + j];
+
+    int i = 0, j = 0, k = l;
+
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j])
+            pData[k++] = L[i++];
+        else
+            pData[k++] = R[j++];
+    }
+
+    while (i < n1) pData[k++] = L[i++];
+    while (j < n2) pData[k++] = R[j++];
+
 }
 
 // parses input file to an integer array
